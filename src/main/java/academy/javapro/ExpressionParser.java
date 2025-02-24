@@ -12,44 +12,76 @@ class ExpressionParser {
     // expr → expr + term
     public double parseExpression() {
         // TODO: Get the leftmost term value by calling parseTerm()
+        double result = parseTerm();
         // TODO: While we haven't reached the end of input and current char is '+'
-        // TODO: Increment position to skip the '+' operator
-        // TODO: Get the next term on the right
-        // TODO: Add the right term to our running total
+        while( position < input.length () && input.charAt(position) == '+'){
+            // TODO: Increment position to skip the '+' operator
+            position++; //skips 
+            // TODO: Get the next term on the right
+            // TODO: Add the right term to our running total
+            result += parseTerm();
+        }
         // TODO: Return the final value
-        throw new UnsupportedOperationException("Implement parseExpression");
+        return result;
+        //throw new UnsupportedOperationException("Implement parseExpression");
     }
 
     // term → term * factor
     private double parseTerm() {
         // TODO: Get the leftmost factor value by calling parseFactor()
+        double result = parseFactor();
         // TODO: While we haven't reached the end of input and current char is '*'
-        // TODO: Increment position to skip the '*' operator
-        // TODO: Get the next factor on the right
-        // TODO: Multiply the right factor with our running total
+       while(position < input.length() && input.charAt(position) == '*'){
+            // TODO: Increment position to skip the '*' operator
+            position++; //skips '*'
+            // TODO: Get the next factor on the right
+            // TODO: Multiply the right factor with our running total
+            result *= parseFactor();
+       }
         // TODO: Return the final value
-        throw new UnsupportedOperationException("Implement parseTerm");
+        return result;
+        //throw new UnsupportedOperationException("Implement parseTerm");
     }
 
     // factor → ( expr )
     private double parseFactor() {
         // TODO: Check if we have an opening parenthesis and haven't reached end of input
-        // TODO: Increment position to skip the opening parenthesis
-        // TODO: Parse the expression inside the parentheses
+        if(position < input.length() && input.charAt(position) == '('){
+            // TODO: Increment position to skip the opening parenthesis
+            position++; //skips '('
+            // TODO: Parse the expression inside the parentheses
+            double result = parseExpression();
         // TODO: Increment position to skip the closing parenthesis
-        // TODO: Return the result of the parenthesized expression
+            if(position < input.length() && input.charAt(position) == ')'){
+                position++; //skips ')'
+            } else {
+                throw new IllegalArgumentException("Mismatched parenteses at postion " + position);
+            }
+            // TODO: Return the result of the parenthesized expression
+            return result;
+        }
         // TODO: If no parentheses, parse and return a number
-        throw new UnsupportedOperationException("Implement parseFactor");
+        return parseNumber();
+        //throw new UnsupportedOperationException("Implement parseFactor");
     }
 
     // Parse a numeric value
     private double parseNumber() {
         // TODO: Create a StringBuilder to collect digits
+        StringBuilder number = new StringBuilder();
         // TODO: While we haven't reached the end and current char is digit or decimal point
-        // TODO: Append the current digit to our number string
-        // TODO: Move to next character
+        while (position < input.length() && (Character.isDigit(input.charAt(position)) || input.charAt(position) == '.')){
+            // TODO: Append the current digit to our number string
+            number.append(input.charAt(position));
+            // TODO: Move to next character
+            position++;
+        }
         // TODO: Convert the string of digits to a double and return it
-        throw new UnsupportedOperationException("Implement parseNumber");
+        if(number.length() == 0){
+            throw new IllegalArgumentException("Unexpected character at position " + position);
+        }
+        return Double.parseDouble(number.toString());
+        //throw new UnsupportedOperationException("Implement parseNumber");
     }
 
     public static void main(String[] args) {
